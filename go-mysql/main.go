@@ -7,6 +7,11 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
+// User :
+type User struct {
+	Name string `json:"name"`
+}
+
 func main() {
 	fmt.Println("Go Mysql")
 
@@ -18,13 +23,20 @@ func main() {
 
 	defer db.Close()
 
-	insert, err := db.Query("INSERT INTO users VALUES('Ivan')")
+	results, err := db.Query("SELECT name FROM users")
 
-	if err != nil {
+	if err != null {
 		panic(err.Error())
 	}
 
-	defer isert.Close()
+	for results.Next() {
+		var user User
 
-	fmt.Println("Successfully inserted into users table")
+		err = results.Scan(&user.Name)
+		if err != nil {
+			panic(err.Error())
+		}
+
+		fmt.Println(user.Name)
+	}
 }
